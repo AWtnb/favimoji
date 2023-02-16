@@ -79,7 +79,7 @@
         <div class="unicode">{{emojiHex}}</div>
       </div>
       <div class="wrapper">
-        <input type="text" v-model="markup">
+        <pre><code>{{markup}}</code></pre>
         <button @click="copyMarkup" :class="{done:copied}">COPY</button>
       </div>
     </div>
@@ -98,17 +98,31 @@
       computed: {
         svgEncode: function () {
           const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50%" y="50%" style="dominant-baseline:central;text-anchor:middle;font-size:90px;">${this.emoji}</text></svg>`
-          return `data:image/svg+xml,${encodeURIComponent(svg)}`
+          return `data:image/svg+xml,${encodeURIComponent(svg)}`;
         },
         markup: function () {
           document.querySelector("#favicon").href = this.svgEncode;
-          return `<link rel="icon" href="${this.svgEncode}">`
+          const lines = [
+            "<!-- Chrome / Firefox / Edge -->",
+            `<link rel="icon" href="${this.svgEncode}">`,
+          ];
+          if (this.twemojiUrl.length > 1) {
+            lines.push("<!-- Safari / IE -->")
+            lines.push(`<link rel="icon alternate" type="image/png" href="${this.twemojiUrl}" />`)
+          }
+          return lines.join("\n")
         },
         emojiHex: function () {
           if (this.emoji.length < 1) {
             return "";
           }
           return String(this.emoji).codePointAt(0).toString(16);
+        },
+        twemojiUrl: function () {
+          if (this.emoji.length < 1) {
+            return "";
+          }
+          return `https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/72x72/${this.emojiHex}.png`;
         }
       },
       methods: {
