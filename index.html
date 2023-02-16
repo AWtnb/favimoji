@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
   <link id="favicon" rel="icon">
+  <link id="faviconAlt" rel="icon alternate" type="image/png">
   <style>
     .container emoji-picker {
       margin: 20px auto;
@@ -117,6 +118,7 @@
             `<link rel="icon" href="${this.svgEncode}">`,
           ];
           if (this.twemojiUrl.length > 1) {
+            document.querySelector("#faviconAlt").href = this.twemojiUrl;
             lines.push("<!-- Safari / IE -->")
             lines.push(`<link rel="icon alternate" type="image/png" href="${this.twemojiUrl}" />`)
           }
