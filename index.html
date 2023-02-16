@@ -32,24 +32,34 @@
     }
 
     .wrapper {
-      width: 60%;
+      width: 80%;
       margin: auto;
       position: relative;
     }
 
-    .wrapper input,
+    .wrapper pre,
     .wrapper button {
       position: absolute;
     }
 
-    .wrapper input {
+    .wrapper pre {
       width: 100%;
-      box-sizing: border-box;
+      margin: 0;
+    }
+
+    .wrapper code {
+      font-family: ui-monospace, Consolas, monospace;
     }
 
     .wrapper button {
       right: 0;
       margin: 0;
+      font-size: .85rem;
+      font-weight: bold;
+      height: 2em;
+      padding: 0 .5em;
+      border-top-left-radius: 0;
+      border-bottom-right-radius: 0;
     }
 
     button:active {
