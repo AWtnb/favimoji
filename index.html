@@ -113,6 +113,7 @@
         },
         markup: function () {
           document.querySelector("#favicon").href = this.svgEncode;
+          document.querySelector("#faviconAlt").href = this.twemojiUrl;
           const lines = [
             "<!-- Chrome / Firefox / Edge -->",
             `<link rel="icon" href="${this.svgEncode}">`,
