@@ -82,12 +82,18 @@
 
   <div id="app">
     <div class="container">
-      <emoji-picker v-on:emoji-click="picked"></emoji-picker>
+      <details>
+        <summary>direct input</summary>
+        <input type="text" v-model="moji">
+      </details>
+      <div v-if="!userMoji">
+        <emoji-picker v-on:emoji-click="picked"></emoji-picker>
+      </div>
     </div>
     <div class="result" v-cloak>
       <div class="picked">
-        <div class="emoji">{{emoji}}</div>
-        <div class="unicode">{{emojiHex}}</div>
+        <div class="emoji">{{symbol}}</div>
+        <div class="unicode">{{dipslayHex}}</div>
       </div>
       <div class="wrapper">
         <pre><code>{{markup}}</code></pre>
@@ -103,17 +109,26 @@
       data: function () {
         return {
           emoji: "🤩",
+          moji: "",
           copied: false,
         }
       },
       computed: {
+        userMoji: function () {
+          return this.moji.charAt(0);
+        },
+        symbol: function () {
+          return (this.userMoji.length) ? this.userMoji : this.emoji;
+        },
         svgEncode: function () {
-          const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50%" y="50%" style="dominant-baseline:central;text-anchor:middle;font-size:90px;">${this.emoji}</text></svg>`
+          const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50%" y="50%" style="dominant-baseline:central;text-anchor:middle;font-size:90px;">${this.symbol}</text></svg>`
           return `data:image/svg+xml,${encodeURIComponent(svg)}`;
         },
         markup: function () {
           document.querySelector("#favicon").href = this.svgEncode;
-          document.querySelector("#faviconAlt").href = this.twemojiUrl;
+          if (this.twemojiUrl.length) {
+            document.querySelector("#faviconAlt").href = this.twemojiUrl;
+          }
           const lines = [
             "<!-- Chrome / Firefox / Edge -->",
             `<link rel="icon" href="${this.svgEncode}">`,
@@ -125,17 +140,18 @@
           }
           return lines.join("\n")
         },
-        emojiHex: function () {
+        dipslayHex: function () {
           if (this.emoji.length < 1) {
             return "";
           }
-          return String(this.emoji).codePointAt(0).toString(16);
+          const s = (this.userMoji.length) ? this.userMoji : this.emoji;
+          return String(s).codePointAt(0).toString(16);
         },
         twemojiUrl: function () {
-          if (this.emoji.length < 1) {
+          if (this.emoji.length < 1 || this.moji.length) {
             return "";
           }
-          return `https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/72x72/${this.emojiHex}.png`;
+          return `https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/72x72/${this.dipslayHex}.png`;
         }
       },
       methods: {
@@ -148,7 +164,7 @@
         }
       },
       watch: {
-        emoji: function () {
+        symbol: function () {
           this.copied = false;
         },
       },
